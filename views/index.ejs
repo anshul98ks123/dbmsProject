@@ -1,0 +1,21 @@
+<% include ./partials/header.ejs%>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <% for(var i=0;i<fields.length; i++) {%>
+            <th scope="col"><%= fields[i]['name'] %></th>
+            <% }%>
+        </tr>
+    </thead>
+    <tbody>
+        <% for(var i=0;i<result.length;i++) {%>
+            <tr>
+                <td><%= result[i]['zipcode']%></td>
+                <td><%= result[i]['xcord']%></td>
+                <td><%= result[i]['ycord']%></td>
+                <td><%= result[i]['place']%></td>
+            </tr>
+        <% }%>
+    </tbody>
+</table>
+<% include ./partials/footer.ejs%>
