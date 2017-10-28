@@ -14,19 +14,108 @@ router.get('/', function(req,res){
 });
 
 router.get('/rider',isRiderLoggedIn, function (req,res) {
-   res.render('index');
+   res.render('rider');
 });
 
 router.get('/driver',isDriverLoggedIn, function (req,res) {
-   res.render('index');
+   res.render('driver');
 });
 
-router.get('/login', function (req,res) {
-   res.render('login');
+router.get('/loginrider', function (req,res) {
+   res.render('loginrider');
+});
+
+router.get('/logindriver', function (req,res) {
+   res.render('logindriver');
 });
 
 router.get('/signuprider', function (req,res) {
    res.render('signuprider');
+});
+
+router.get('/logout', function (req,res) {
+   res.app.locals.rider = undefined;
+   res.app.locals.driver = undefined;
+   con.query("select *from location", function (err, result, fields) {
+      if (err) throw err;
+      res.render('index', {
+         result: result,
+         fields: fields,
+         success: 'logged out successfully'
+      });
+   });
+});
+
+router.post('/loginrider', function (req,res) {
+   con.query("select *from user where userid="+req.body.id, (err,result,fields)=>{
+      if(err){
+         console.log(err);
+         return res.render('signuprider',{
+            error: 'error occurred' + err.message
+         });
+      }
+      con.query("select *from rider where userid="+req.body.id, (err,results,fields)=>{
+         if(err){
+            console.log(err);
+            return res.render('signuprider',{
+               error: 'error occurred' + err.message
+            });
+         }
+         if(results == undefined){
+            return res.render('signuprider',{
+               error: 'user does not exist'
+            });
+         }
+         if(result[0]['password'] === req.body.password){
+            req.app.locals.rider = result[0];
+            return res.render('rider',{
+               success: 'Welcome '+result[0]['name']
+            });
+         }
+         return res.render('loginrider',{
+            error: 'incorrect password'
+         });
+      });
+   });
+});
+
+router.post('/logindriver', function (req,res) {
+   con.query("select *from user where userid="+req.body.id, (err,result,fields)=>{
+      if(err){
+         console.log(err);
+         con.query("select place,zipcode from location", function (err, result, fields) {
+            if (err) throw err;
+            return res.render('signupdriver', {
+               result: result,
+               error: 'error occured : ' + err.message
+            });
+         });
+      }
+      con.query("select *from driver where userid="+req.body.id, (err,results,fields)=>{
+         if(err){
+            console.log(err);
+            return res.render('signupdriver', {
+               result: result,
+               error: 'error occured : ' + err.message
+            });
+         }
+         if(results == undefined){
+            return res.render('signupdriver', {
+               result: result,
+               error: 'error occured : ' + err.message
+            });
+         }
+         if(result[0]['password'] === req.body.password){
+            req.app.locals.driver = result[0];
+            return res.render('driver',{
+               success: 'Welcome '+result[0]['name']
+            });
+         }
+         return res.render('logindriver',{
+            error: 'incorrect password'
+         });
+      });
+   });
 });
 
 router.get('/signupdriver', function (req,res) {
@@ -81,7 +170,7 @@ router.post('/signuprider', function (req,res) {
                         }
                         console.log("successful");
                         req.flash('success', 'Successfully signed up as rider');
-                        return res.render('signuprider');
+                        return res.redirect('/signuprider');
                      });
                });
          });
@@ -153,7 +242,7 @@ router.post('/signupdriver', function (req,response) {
                               }
                               console.log("successful");
                               req.flash('success', 'Successfully signed up as driver');
-                              return response.render('signupdriver');
+                              return res.redirect('/signupdriver');
                            });
                      });
                })
@@ -167,15 +256,17 @@ function isRiderLoggedIn(req,res,next) {
    if(req.app.locals.rider){
       return next();
    }
-   req.flash('error', 'You must login first');
-   res.redirect('/login');
+   return res.render('loginrider', {
+      error: 'You must login first'
+   });
 }
 
 function isDriverLoggedIn(req,res,next) {
    if(req.app.locals.driver){
       return next();
    }
-   req.flash('error', 'You must login first');
-   res.redirect('/login');
+   return res.render('logindriver', {
+      error: 'You must login first'
+   });
 }
 module.exports = router;

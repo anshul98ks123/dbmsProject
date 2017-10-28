@@ -1,0 +1,19 @@
+<% include ./partials/header.ejs%>
+<% include ./partials/navbar.ejs%>
+<% include ./partials/flash.ejs%>
+<br><br>
+<form method="post" action="/logindriver" id="form1">
+   <h3>Fill Details</h3>
+   <hr>
+   <div class="form-group">
+      <label for="id">UserId</label>
+      <input type="text" class="form-control" id="id" name="id" aria-describedby="emailHelp" placeholder="Enter full name" required>
+   </div>
+   <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+   </div>
+   <hr>
+   <button class="btn btn-primary">Login As Driver</button>
+</form>
+<% include ./partials/footer.ejs%>
