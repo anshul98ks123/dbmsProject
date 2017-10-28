@@ -47,11 +47,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="loginrider.ejs" pinned="false" current-in-tab="true">
+      <file leaf-file-name="loginrider.ejs" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/loginrider.ejs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="54">
-              <caret line="3" column="8" lean-forward="true" selection-start-line="3" selection-start-column="8" selection-end-line="3" selection-end-column="8" />
+            <state relative-caret-position="324">
+              <caret line="18" column="27" lean-forward="true" selection-start-line="18" selection-start-column="27" selection-end-line="18" selection-end-column="27" />
               <folding />
             </state>
           </provider>
@@ -77,11 +77,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="navbar.ejs" pinned="false" current-in-tab="false">
+      <file leaf-file-name="navbar.ejs" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/views/partials/navbar.ejs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
-              <caret line="19" column="17" lean-forward="true" selection-start-line="19" selection-start-column="17" selection-end-line="19" selection-end-column="17" />
+            <state relative-caret-position="0">
+              <caret line="0" column="28" lean-forward="false" selection-start-line="0" selection-start-column="28" selection-end-line="0" selection-end-column="28" />
               <folding />
             </state>
           </provider>
@@ -298,12 +298,12 @@
       <workItem from="1508950905713" duration="4925000" />
       <workItem from="1509123276409" duration="5795000" />
       <workItem from="1509182955941" duration="6363000" />
-      <workItem from="1509197929345" duration="2940000" />
+      <workItem from="1509197929345" duration="3234000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="20347000" />
+    <option name="totallyTimeSpent" value="20641000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="-4" width="1922" height="1092" extended-state="6" />
@@ -549,18 +549,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/partials/navbar.ejs">
+    <entry file="file://$PROJECT_DIR$/views/loginrider.ejs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="19" column="17" lean-forward="true" selection-start-line="19" selection-start-column="17" selection-end-line="19" selection-end-column="17" />
+        <state relative-caret-position="324">
+          <caret line="18" column="27" lean-forward="true" selection-start-line="18" selection-start-column="27" selection-end-line="18" selection-end-column="27" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/loginrider.ejs">
+    <entry file="file://$PROJECT_DIR$/views/partials/navbar.ejs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="54">
-          <caret line="3" column="8" lean-forward="true" selection-start-line="3" selection-start-column="8" selection-end-line="3" selection-end-column="8" />
+        <state relative-caret-position="0">
+          <caret line="0" column="28" lean-forward="false" selection-start-line="0" selection-start-column="28" selection-end-line="0" selection-end-column="28" />
           <folding />
         </state>
       </provider>
