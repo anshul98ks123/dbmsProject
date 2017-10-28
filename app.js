@@ -6,7 +6,8 @@ const express        = require("express"),
       db             = require('./db/index'),
       methodOverride = require("method-override");
 
-const indexRoutes = require("./routes/index");
+const indexRoutes = require("./routes/index"),
+      ajaxRoutes  = require("./routes/ajax");
 
 app.use(flash());
 app.use(require("express-session")({
@@ -20,6 +21,7 @@ app.use(methodOverride('_method'));
 app.set('view engine', 'ejs');
 app.use('/', express.static(path.join(__dirname, 'public')));
 app.use(indexRoutes);
+app.use(ajaxRoutes);
 
 app.listen(7000,function () {
    console.log("server started");

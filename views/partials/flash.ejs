@@ -1,11 +1,15 @@
-<br>
 <% if(typeof error != 'undefined' && error.length > 0) { %>
+   <br><br><br><br>
    <div class="alert alert-danger" role="alert">
        <%= error %>
    </div>
-<% }%>
-<% if(typeof success != 'undefined' && success.length > 0) { %>
+    <br>
+<% } else if(typeof success != 'undefined' && success.length > 0) { %>
+   <br><br><br><br>
    <div class="alert alert-success" role="alert">
        <%= success %>
    </div>
-<% }%>
+    <br>
+<% } else {%>
+    <br><br><br><br>
+<% } %>

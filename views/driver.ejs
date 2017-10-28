@@ -2,4 +2,24 @@
 <% include ./partials/navbar.ejs%>
 <% include ./partials/flash.ejs%>
 <h1>Driver Dashboard</h1>
+<hr>
+<h3>Wallet Details</h3>
+<hr>
+Balance - Rs. <span id="amount"></span>
+<hr>
+<h3>Past Transactions</h3>
+<hr>
+<div id="transactions">
+</div>
+<hr>
+<script>
+   $(function () {
+      $.get('/getWalletDetailsDriver',function (amount) {
+         $('#amount').html(amount);
+      });
+   });
+   $.get('/gettransactionsDriver', function (arr) {
+      console.log(arr);
+   });
+</script>
 <% include ./partials/footer.ejs%>

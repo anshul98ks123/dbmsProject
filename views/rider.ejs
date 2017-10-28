@@ -2,4 +2,49 @@
 <% include ./partials/navbar.ejs%>
 <% include ./partials/flash.ejs%>
 <h1>Rider Dashboard</h1>
+<hr>
+<h3>Book a Ride</h3>
+<form method="post" action="/rider">
+    <div class="form-group">
+        <label for="loc">Current Location</label>
+        <select class="form-control" name="loc" id="loc" required>
+            <option value="rider" disabled selected>Choose Location</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="dest">Destination</label>
+        <select class="form-control" name="dest" id="dest" required>
+            <option value="rider" disabled selected>Choose Location</option>
+        </select>
+    </div>
+    <button class="btn btn-primary btn-outline">Book</button>
+</form>
+<hr>
+<h3>Wallet Details</h3>
+<hr>
+Balance - Rs. <span id="amount"></span>
+<hr>
+<h3>Past Transactions</h3>
+<hr>
+<div id="transactions">
+</div>
+<hr>
+<script>
+    $(function () {
+       $.get('/getWalletDetailsRider',function (amount) {
+          $('#amount').html(amount);
+       });
+       $.get('/gettransactionsRider', function (arr) {
+          console.log(arr);
+       });
+       $.get('/getLocations', function (arr) {
+          console.log(arr);
+          for(var i=0;i<arr.length;i++){
+             console.log(arr[i]);
+             $('#loc').append($(`<option value='${arr[i]["zipcode"]}'>${arr[i]["zipcode"]} - ${arr[i]["place"]}</option>`))
+             $('#dest').append($(`<option value='${arr[i]["zipcode"]}'>${arr[i]["zipcode"]} - ${arr[i]["place"]}</option>`))
+          }
+       });
+    });
+</script>
 <% include ./partials/footer.ejs%>

@@ -33,6 +33,25 @@ router.get('/signuprider', function (req,res) {
    res.render('signuprider');
 });
 
+router.post('/rider', function (req,res) {
+   con.query('select riderid from rider where userid='+res.app.locals.rider['userid'], (err,results,fields)=>{
+      if(err){
+         console.log(err);
+         return res.redirect('/rider');
+      }
+      con.query('insert into ridereq(riderid,pickuplocation,droplocation) values(' +
+         results[0]['riderid'] + ",'" + req.body.loc + "','" + req.body.dest + "')", (err,r,f)=>{
+         if(err){
+            console.log(err);
+            return res.redirect('/rider');
+         }
+         return res.render('rider',{
+            success: 'Cab Booked by '+result[0]['name']
+         });
+      })
+   })
+});
+
 router.get('/logout', function (req,res) {
    res.app.locals.rider = undefined;
    res.app.locals.driver = undefined;
@@ -61,7 +80,7 @@ router.post('/loginrider', function (req,res) {
                error: 'error occurred' + err.message
             });
          }
-         if(results == undefined){
+         if(results.length === 0){
             return res.render('signuprider',{
                error: 'user does not exist'
             });
@@ -99,10 +118,10 @@ router.post('/logindriver', function (req,res) {
                error: 'error occured : ' + err.message
             });
          }
-         if(results == undefined){
+         if(results.length === 0){
             return res.render('signupdriver', {
                result: result,
-               error: 'error occured : ' + err.message
+               error: 'user does not exist'
             });
          }
          if(result[0]['password'] === req.body.password){
@@ -242,7 +261,7 @@ router.post('/signupdriver', function (req,response) {
                               }
                               console.log("successful");
                               req.flash('success', 'Successfully signed up as driver');
-                              return res.redirect('/signupdriver');
+                              return response.redirect('/signupdriver');
                            });
                      });
                })
