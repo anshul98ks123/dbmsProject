@@ -21,7 +21,7 @@ app.set('view engine', 'ejs');
 app.use('/', express.static(path.join(__dirname, 'public')));
 app.use(indexRoutes);
 
-app.listen(8000,function () {
+app.listen(7000,function () {
    console.log("server started");
 });
 
