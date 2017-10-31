@@ -39,8 +39,8 @@ router.post('/rider', function (req,res) {
          console.log(err);
          return res.redirect('/rider');
       }
-      con.query('insert into ridereq(riderid,pickuplocation,droplocation) values(' +
-         results[0]['riderid'] + ",'" + req.body.loc + "','" + req.body.dest + "')", (err,r,f)=>{
+      con.query(`insert into ridereq(riderid,pickuplocation,droplocation) 
+         values(${results[0]['riderid']},${req.body.loc},${req.body.dest})`, (err,r,f)=>{
          if(err){
             console.log(err);
             return res.redirect('/rider');
