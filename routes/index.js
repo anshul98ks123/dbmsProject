@@ -180,7 +180,7 @@ router.post('/signuprider', function (req,res) {
                      });
                   }
                   con.query("insert into rider (userid,dob) values("+ result[0]['max']+",'"+req.body.date+"')"
-                     , function (err,result,fields) {
+                     , function (err,resultss,fields) {
                         if(err){
                            console.log(err);
                            return res.render('signuprider',{
@@ -188,8 +188,10 @@ router.post('/signuprider', function (req,res) {
                            });
                         }
                         console.log("successful");
-                        req.flash('success', 'Successfully signed up as rider');
-                        return res.redirect('/signuprider');
+                        return res.render('loginrider',{
+                           success: 'Successfully signed up as rider with userid = ' + result[0]['max']+"" +
+                           "\n remember this userid you will need it for loggin in to your account"
+                        });
                      });
                });
          });
@@ -252,7 +254,7 @@ router.post('/signupdriver', function (req,response) {
                         con.query("insert into driver (userid,dob,licenseno,taxiid,location) " +
                            "values("+ userid+",'"+req.body.date+"','" +
                            req.body.license + "',"+ taxiid + ","+ req.body.loc+")"
-                           , function (err,result,fields) {
+                           , function (err,resultss,fields) {
                               if(err){
                                  console.log(err);
                                  return response.render('signupdriver',{
@@ -260,8 +262,11 @@ router.post('/signupdriver', function (req,response) {
                                  });
                               }
                               console.log("successful");
-                              req.flash('success', 'Successfully signed up as driver');
-                              return response.redirect('/signupdriver');
+                              req.flash('success', );
+                              return response.render('logindriver',{
+                                 success: 'Successfully signed up as driver with userid = ' + result['0']['max']+"" +
+                                 "\n remember this userid you will need it for loggin in to your account"
+                              });
                            });
                      });
                })
