@@ -37,19 +37,23 @@ router.post('/rider', function (req,res) {
    con.query('select riderid from rider where userid='+res.app.locals.rider['userid'], (err,results,fields)=>{
       if(err){
          console.log(err);
-         return res.redirect('/rider');
+         return res.render('rider',{
+            error: 'Error in boooking ride' + err.message
+         });
       }
       con.query(`insert into ridereq(riderid,pickuplocation,droplocation) 
          values(${results[0]['riderid']},${req.body.loc},${req.body.dest})`, (err,r,f)=>{
          if(err){
             console.log(err);
-            return res.redirect('/rider');
+            return res.render('rider',{
+               error: 'Error in boooking ride' + err.message
+            });
          }
          return res.render('rider',{
-            success: 'Cab Booked by '+result[0]['name']
+            success: 'Cab Booked by '+ result[0]['name']
          });
       })
-   })
+   });
 });
 
 router.get('/logout', function (req,res) {
@@ -196,6 +200,39 @@ router.post('/signuprider', function (req,res) {
                });
          });
       });
+   });
+});
+
+router.post('/query', function (req,response) {
+   con.query("select *from location", function (err, result, field) {
+      if (err) throw err;
+      console.log(req.body.query);
+      console.log(0);
+      if(req.body.query.length >= 6 && req.body.query.slice(0,6) === "select"){
+         con.query(req.body.query, (er,results,fields) => {
+            if (er){
+               console.log(err);
+               console.log(1);
+               return response.render('index', {
+                  result: result,
+                  fields: field,
+                  error: er.message
+               });
+            }
+            console.log(2);
+            return response.render('index', {
+               result: results,
+               fields: fields,
+               success: 'Query results : '
+            });
+         });
+      } else {
+         console.log(3);
+         return response.render('index', {
+            result: result,
+            fields: field
+         });
+      }
    });
 });
 

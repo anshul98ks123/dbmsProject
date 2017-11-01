@@ -10,14 +10,22 @@
         </tr>
     </thead>
     <tbody>
-        <% for(var i=0;i<result.length;i++) {%>
+        <% for(var j=0;j<result.length;j++) {%>
             <tr>
-                <td><%= result[i]['zipcode']%></td>
-                <td><%= result[i]['place']%></td>
-                <td><%= result[i]['xcoordinate']%></td>
-                <td><%= result[i]['ycoordinate']%></td>
+                <% for(var k in result[j]) {%>
+                    <% if(result[j].hasOwnProperty(k)){%>
+                        <td><%= result[j][k] %></td>
+                    <% }%>
+                <% } %>
             </tr>
         <% }%>
     </tbody>
 </table>
+<form action="/query" method="post">
+    <div class="form-group">
+        <label for="query">Raw Query</label>
+        <textarea class="form-control" name="query" id="query" required></textarea>
+    </div>
+    <button class="btn btn-primary">Submit Query</button>
+</form>
 <% include ./partials/footer.ejs%>
