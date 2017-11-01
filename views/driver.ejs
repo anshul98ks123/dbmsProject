@@ -3,13 +3,52 @@
 <% include ./partials/flash.ejs%>
 <h1>Driver Dashboard</h1>
 <hr>
+<div id="accept">
+</div>
 <h3>Wallet Details</h3>
 <hr>
 Balance - Rs. <span id="amount"></span>
 <hr>
+<h3>Contact Numbers</h3>
+<hr>
+<div id="contact">
+</div>
+<form method="post" action="/addContactDriver">
+   <div class="form-group">
+      <input type="text" class="form-control" id="contact" name="contact" placeholder="Enter contact number" required>
+   </div>
+   <button class="btn btn-primary">Add Contact</button>
+</form>
+<hr>
+<h3>Past Rides</h3>
+<hr>
+<div>
+   <table class="table table-striped">
+      <thead>
+      <tr>
+         <th scope="col">Pickup</th>
+         <th scope="col">Destination</th>
+         <th scope="col">Earning</th>
+      </tr>
+      </thead>
+      <tbody id="rides">
+      </tbody>
+   </table>
+</div>
+<hr>
 <h3>Past Transactions</h3>
 <hr>
 <div id="transactions">
+   <table class="table table-striped">
+      <thead>
+      <tr>
+         <th scope="col">Mode of payment</th>
+         <th scope="col">Amount</th>
+      </tr>
+      </thead>
+      <tbody id="rows">
+      </tbody>
+   </table>
 </div>
 <hr>
 <script>
@@ -17,9 +56,52 @@ Balance - Rs. <span id="amount"></span>
       $.get('/getWalletDetailsDriver',function (amount) {
          $('#amount').html(amount);
       });
-   });
-   $.get('/gettransactionsDriver', function (arr) {
-      console.log(arr);
+      $.get('/getDriverContacts', (phone)=>{
+         console.log(phone);
+         for(let i=0;i<phone.length;i++){
+            $('#contact').append(`<p>${phone[i]["phoneno"]}</p>`);
+         }
+      });
+      $.get('/gettransactionsDriver', function (arr) {
+         console.log(arr);
+      });
+      $.get('/acceptButton', (exists)=>{
+         if(exists){
+            $('#accept').html(`
+            <h3>Current Ride</h3>
+            <form action="/completeRide" method="post">
+               <button class="btn btn-success" id="completeRide" type="submit">Complete Ride</button>
+            </form>
+            <br><br>
+         `);
+         }
+      });
+      $.get('/getPastRidesDriver', function (result) {
+         for(let i=0;i<result.length;i++){
+            $.get('/getPlaceName', {
+               pickup: result[item]["pickuplocation"],
+               drop: result[item]["droplocation"]
+            },function (places) {
+               $('#rides').append(`
+                      <tr>
+                          <td>${places["p1"]}</td>
+                          <td>${places["p2"]}</td>
+                          <td>${result[i]["fare"]}</td>
+                      </tr>
+                   `)
+            });
+         }
+      });
+      $.get('/gettransactionsDriver', function (result) {
+         for(item in result){
+            $('#rows').append(`
+                <tr>
+                    <td>${result[item]["mode"]}</td>
+                    <td>${result[item]["amount"]}</td>
+                </tr>
+             `)
+         }
+      });
    });
 </script>
 <% include ./partials/footer.ejs%>

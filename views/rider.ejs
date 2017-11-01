@@ -3,30 +3,65 @@
 <% include ./partials/flash.ejs%>
 <h1>Rider Dashboard</h1>
 <hr>
-<h3>Book a Ride</h3>
-<form method="post" action="/rider">
-    <div class="form-group">
-        <label for="loc">Current Location</label>
-        <select class="form-control" name="loc" id="loc" required>
-            <option value="rider" disabled selected>Choose Location</option>
-        </select>
-    </div>
-    <div class="form-group">
-        <label for="dest">Destination</label>
-        <select class="form-control" name="dest" id="dest" required>
-            <option value="rider" disabled selected>Choose Location</option>
-        </select>
-    </div>
-    <button class="btn btn-primary btn-outline">Book</button>
-</form>
-<hr>
+<div id="ride">
+</div>
 <h3>Wallet Details</h3>
 <hr>
-Balance - Rs. <span id="amount"></span>
+Balance - Rs. <span id="amount"></span><br>
+<form method="post" action="/addMoneyRider">
+    <div class="form-group">
+        <select class="form-control" name="method" id="method" required>
+            <option value="rider" disabled selected>Payment method</option>
+            <option value="cash">Cash</option>
+            <option value="card">Card</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <input type="number" class="form-control" id="amount" name="amount" max="1000" placeholder="Enter amount" required>
+    </div>
+    <button class="btn btn-primary">Add Money to Wallet</button>
+</form>
 <hr>
-<h3>Past Transactions</h3>
+<h3>Contact Numbers</h3>
+<hr>
+<div id="contact">
+</div>
+<form method="post" action="/addContactRider">
+    <div class="form-group">
+        <input type="text" class="form-control" id="contact" name="contact" placeholder="Enter contact number" required>
+    </div>
+    <button class="btn btn-primary">Add Contact</button>
+</form>
+<hr>
+<h3>Past Rides</h3>
+<hr>
+<div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Pickup</th>
+            <th scope="col">Destination</th>
+            <th scope="col">Fare</th>
+        </tr>
+        </thead>
+        <tbody id="rides">
+        </tbody>
+    </table>
+</div>
+<hr>
+<h3>Past Wallet Transactions</h3>
 <hr>
 <div id="transactions">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Mode of payment</th>
+                <th scope="col">Amount</th>
+            </tr>
+        </thead>
+        <tbody id="rows">
+        </tbody>
+    </table>
 </div>
 <hr>
 <script>
@@ -34,17 +69,89 @@ Balance - Rs. <span id="amount"></span>
        $.get('/getWalletDetailsRider',function (amount) {
           $('#amount').html(amount);
        });
-       $.get('/gettransactionsRider', function (arr) {
-          console.log(arr);
+       $.get('/gettransactionsRider', function (result) {
+          for(item in result){
+             $('#rows').append(`
+                <tr>
+                    <td>${result[item]["mode"]}</td>
+                    <td>${result[item]["amount"]}</td>
+                </tr>
+             `)
+          }
+       });
+       $.get('/getPastRidesRider', function (result) {
+          for(let i=0;i<result.length;i++){
+             $.get('/getPlaceName', {
+                pickup: result[i]["pickuplocation"],
+                drop: result[i]["droplocation"]
+             },function (places) {
+                $('#rides').append(`
+                <tr>
+                    <td>${places["p1"]}</td>
+                    <td>${places["p2"]}</td>
+                    <td>${result[i]["fare"]}</td>
+                </tr>
+             `)
+             });
+          }
        });
        $.get('/getLocations', function (arr) {
           console.log(arr);
-          for(var i=0;i<arr.length;i++){
+          for(let i=0;i<arr.length;i++){
              console.log(arr[i]);
              $('#loc').append($(`<option value='${arr[i]["zipcode"]}'>${arr[i]["zipcode"]} - ${arr[i]["place"]}</option>`))
              $('#dest').append($(`<option value='${arr[i]["zipcode"]}'>${arr[i]["zipcode"]} - ${arr[i]["place"]}</option>`))
           }
        });
+       $.get('/getRiderContacts', (phone)=>{
+          console.log(phone);
+          for(let i=0;i<phone.length;i++){
+             $('#contact').append(`<p>${phone[i]["phoneno"]}</p>`);
+          }
+       });
+       $.get('/isRiding', (result)=>{
+          if(result.length > 0){
+             $.get('/getPlaceN  ame', {
+                pickup: result[0]["pickuplocation"],
+                drop: result[0]["droplocation"]
+             },function (places) {
+                $('#ride').html(`
+                    <h3>Current Ride</h3>
+                    <hr>
+                    From ${places["p1"]}<br>
+                    To ${places["p2"]}
+                    <div class="progress" style="width: 50%">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                        aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 50%">
+                        </div>
+                    </div>
+                    Fare - Rs.${result[0]["fare"]}
+                    <hr>
+                    <br>
+                `)
+             });
+          } else {
+             $('#ride').html(`
+                <h3>Book a Ride</h3>
+                    <form method="post" action="/rider">
+                        <div class="form-group">
+                            <label for="loc">Current Location</label>
+                            <select class="form-control" name="loc" id="loc" required>
+                                <option value="rider" disabled selected>Choose Location</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="dest">Destination</label>
+                            <select class="form-control" name="dest" id="dest" required>
+                                <option value="rider" disabled selected>Choose Location</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary btn-outline">Book</button>
+                    </form>
+                    <hr>
+             `);
+          }
+       })
     });
 </script>
 <% include ./partials/footer.ejs%>

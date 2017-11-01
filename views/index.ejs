@@ -1,34 +1,33 @@
 <% include ./partials/header.ejs%>
 <% include ./partials/navbar.ejs%>
 <% include ./partials/flash.ejs%>
-<% if(typeof result != "undefined") {%>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <% for(var i=0;i<fields.length; i++) {%>
-            <th scope="col"><%= fields[i]['name'] %></th>
-            <% }%>
-        </tr>
-    </thead>
-    <tbody>
-        <% for(var j=0;j<result.length;j++) {%>
-            <tr>
-                <% for(var k in result[j]) {%>
-                    <% if(result[j].hasOwnProperty(k)){%>
-                        <td><%= result[j][k] %></td>
-                    <% }%>
-                <% } %>
-            </tr>
-        <% }%>
-    </tbody>
-</table>
-<% } %>
-
-<form action="/query" method="post">
+<form action="/" method="post">
     <div class="form-group">
         <label for="query">Raw Query</label>
         <textarea class="form-control" name="query" id="query" required></textarea>
     </div>
     <button class="btn btn-primary">Submit Query</button>
 </form>
+<% if(typeof result != "undefined") {%>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <% for(var i=0;i<fields.length; i++) {%>
+        <th scope="col"><%= fields[i]['name'] %></th>
+        <% }%>
+    </tr>
+    </thead>
+    <tbody>
+    <% for(var j=0;j<result.length;j++) {%>
+    <tr>
+        <% for(var k in result[j]) {%>
+        <% if(result[j].hasOwnProperty(k)){%>
+        <td><%= result[j][k] %></td>
+        <% }%>
+        <% } %>
+    </tr>
+    <% }%>
+    </tbody>
+</table>
+<% } %>
 <% include ./partials/footer.ejs%>
