@@ -4,13 +4,7 @@ const express  = require("express"),
 
 // HOME PAGE
 router.get('/', function(req,res){
-   con.query("select *from location", function (err, result, fields) {
-      if (err) throw err;
-      res.render('index', {
-         result: result,
-         fields: fields
-      });
-   });
+   res.render('index');
 });
 
 router.get('/rider',isRiderLoggedIn, function (req,res) {
@@ -37,7 +31,7 @@ router.post('/rider', function (req,res) {
    con.query('select riderid from rider where userid='+res.app.locals.rider['userid'], (err,results,fields)=>{
       if(err){
          console.log(err);
-         return res.render('rider',{
+         return res.render('index',{
             error: 'Error in boooking ride' + err.message
          });
       }
@@ -45,11 +39,11 @@ router.post('/rider', function (req,res) {
          values(${results[0]['riderid']},${req.body.loc},${req.body.dest})`, (err,r,f)=>{
          if(err){
             console.log(err);
-            return res.render('rider',{
+            return res.render('index',{
                error: 'Error in boooking ride' + err.message
             });
          }
-         return res.render('rider',{
+         return res.render('index',{
             success: 'Cab Booked by '+ result[0]['name']
          });
       })
@@ -152,53 +146,27 @@ router.get('/signupdriver', function (req,res) {
 
 router.post('/signuprider', function (req,res) {
    console.log(req.body);
-   con.query("insert into wallet values()", function (err, result, fields) {
-      if (err){
+   con.query("insert into user (name,password,email) values('"
+      + req.body.name + "','" + req.body.password + "','"
+      + req.body.email + "')", function (err,result,fields) {
+      if(err){
          console.log(err);
-         return res.render('signuprider',{
+         return res.render('index',{
             error: 'error occurred' + err.message
          });
       }
-      con.query("select max(walletid) as max from wallet", (err, result, fields)=>{
-         if(err){
-            console.log(err);
-            return res.render('signuprider',{
-               error: 'error occurred' + err.message
-            });
-         }
-         con.query("insert into user (name,password,email,walletid) values('"
-            + req.body.name + "','" + req.body.password + "','"
-            + req.body.email + "',"+ (result[0]['max']) +")", function (err,result,fields) {
+      con.query("insert into rider (dob) values('"+ req.body.date+"')"
+         , function (err,resultss,fields) {
             if(err){
                console.log(err);
-               return res.render('signuprider',{
+               return res.render('index',{
                   error: 'error occurred' + err.message
                });
             }
-            con.query("select max(userid) as max from user"
-               , function (err,result,fields) {
-                  if(err){
-                     console.log(err);
-                     return res.render('signuprider',{
-                        error: 'error occurred' + err.message
-                     });
-                  }
-                  con.query("insert into rider (userid,dob) values("+ result[0]['max']+",'"+req.body.date+"')"
-                     , function (err,resultss,fields) {
-                        if(err){
-                           console.log(err);
-                           return res.render('signuprider',{
-                              error: 'error occurred' + err.message
-                           });
-                        }
-                        console.log("successful");
-                        return res.render('loginrider',{
-                           success: 'Successfully signed up as rider with userid = ' + result[0]['max']+"" +
-                           "\n remember this userid you will need it for loggin in to your account"
-                        });
-                     });
-               });
-         });
+            console.log("successful");
+            return res.render('loginrider',{
+               success: 'Successfully signed up as rider'
+            });
       });
    });
 });
@@ -239,76 +207,39 @@ router.post('/query', function (req,response) {
 router.post('/signupdriver', function (req,response) {
    console.log(req.body);
    let userid,taxiid;
-   con.query("insert into wallet values()", function (err, result, fields) {
-      if (err){
+   con.query("insert into user (name,password,email) values('"
+      + req.body.name + "','" + req.body.password + "','"
+      + req.body.email + "')", function (err,result,fields) {
+      if(err){
          console.log(err);
-         return response.render('signupdriver',{
+         return response.render('index',{
             error: 'error occurred' + err.message
          });
       }
-      con.query("select max(walletid) as max from wallet", (err, result, fields)=>{
+      con.query("insert into taxi(type,model_name,color,manufacturer)" +
+         " values('"+req.body.type+"','"+req.body.model+"','" +
+         req.body.color+"','"+req.body.man+"')", (err, result, fields) => {
          if(err){
             console.log(err);
-            return response.render('signupdriver',{
+            return response.render('index',{
                error: 'error occurred' + err.message
             });
          }
-         con.query("insert into user (name,password,email,walletid) values('"
-            + req.body.name + "','" + req.body.password + "','"
-            + req.body.email + "',"+ (result[0]['max']) +")", function (err,result,fields) {
-            if(err){
-               console.log(err);
-               return response.render('signupdriver',{
-                  error: 'error occurred' + err.message
-               });
-            }
-            con.query("insert into taxi(type,model_name,color,manufacturer)" +
-               " values('"+req.body.type+"','"+req.body.model+"','" +
-               req.body.color+"','"+req.body.man+"')", (err, result, fields) => {
+         con.query("insert into driver (dob,licenseno,location) " +
+            "values('" + req.body.date+"','" +
+            req.body.license + "',"+ req.body.loc+")"
+            , function (err,resultss,fields) {
                if(err){
                   console.log(err);
-                  return response.render('signupdriver',{
+                  return response.render('index',{
                      error: 'error occurred' + err.message
                   });
                }
-               con.query("select max(taxiid) as max from taxi", (err,res,fields) => {
-                  if(err){
-                     console.log(err);
-                     return response.render('signupdriver',{
-                        error: 'error occurred' + err.message
-                     });
-                  }
-                  taxiid = res[0]['max'];
-                  con.query("select max(userid) as max from user"
-                     , function (err,result,fields) {
-                        if(err){
-                           console.log(err);
-                           return response.render('signupdriver',{
-                              error: 'error occurred' + err.message
-                           });
-                        }
-                        userid = result[0]['max'];
-                        con.query("insert into driver (userid,dob,licenseno,taxiid,location) " +
-                           "values("+ userid+",'"+req.body.date+"','" +
-                           req.body.license + "',"+ taxiid + ","+ req.body.loc+")"
-                           , function (err,resultss,fields) {
-                              if(err){
-                                 console.log(err);
-                                 return response.render('signupdriver',{
-                                    error: 'error occurred' + err.message
-                                 });
-                              }
-                              console.log("successful");
-                              req.flash('success', );
-                              return response.render('logindriver',{
-                                 success: 'Successfully signed up as driver with userid = ' + result['0']['max']+"" +
-                                 "\n remember this userid you will need it for loggin in to your account"
-                              });
-                           });
-                     });
-               })
+               console.log("successful");
+               return response.render('logindriver',{
+                  success: 'Successfully signed up as driver'
+               });
             });
-         });
       });
    });
 });

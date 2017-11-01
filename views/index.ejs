@@ -1,6 +1,7 @@
 <% include ./partials/header.ejs%>
 <% include ./partials/navbar.ejs%>
 <% include ./partials/flash.ejs%>
+<% if(typeof result != "undefined") {%>
 <table class="table table-striped">
     <thead>
         <tr>
@@ -21,6 +22,8 @@
         <% }%>
     </tbody>
 </table>
+<% } %>
+
 <form action="/query" method="post">
     <div class="form-group">
         <label for="query">Raw Query</label>
