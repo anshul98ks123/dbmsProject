@@ -57,13 +57,6 @@ router.get('/getPlaceName', (req,res) => {
    })
 });
 
-router.get('/gettransactionsDriver', (req,res) => {
-   con.query("select mode,amount from payment where walletid="+res.app.locals.driver['walletid'],
-      (err,results,fields)=>{
-         res.status(200).send(results.toString());
-      });
-});
-
 router.get('/acceptButton', (req,res) => {
    con.query(`select status from driver where userid=${res.app.locals.driver['userid']}`, (err,result,fields)=>{
       if(result[0]['status'] === "Assigned"){

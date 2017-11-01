@@ -36,21 +36,6 @@ Balance - Rs. <span id="amount"></span>
    </table>
 </div>
 <hr>
-<h3>Past Transactions</h3>
-<hr>
-<div id="transactions">
-   <table class="table table-striped">
-      <thead>
-      <tr>
-         <th scope="col">Mode of payment</th>
-         <th scope="col">Amount</th>
-      </tr>
-      </thead>
-      <tbody id="rows">
-      </tbody>
-   </table>
-</div>
-<hr>
 <script>
    $(function () {
       $.get('/getWalletDetailsDriver',function (amount) {
@@ -61,9 +46,6 @@ Balance - Rs. <span id="amount"></span>
          for(let i=0;i<phone.length;i++){
             $('#contact').append(`<p>${phone[i]["phoneno"]}</p>`);
          }
-      });
-      $.get('/gettransactionsDriver', function (arr) {
-         console.log(arr);
       });
       $.get('/acceptButton', (exists)=>{
          if(exists){
@@ -77,10 +59,11 @@ Balance - Rs. <span id="amount"></span>
          }
       });
       $.get('/getPastRidesDriver', function (result) {
+         console.log(result);
          for(let i=0;i<result.length;i++){
             $.get('/getPlaceName', {
-               pickup: result[item]["pickuplocation"],
-               drop: result[item]["droplocation"]
+               pickup: result[i]["pickuplocation"],
+               drop: result[i]["droplocation"]
             },function (places) {
                $('#rides').append(`
                       <tr>
